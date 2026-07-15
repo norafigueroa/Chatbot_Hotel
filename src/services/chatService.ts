@@ -1,94 +1,42 @@
-import { MODELS, MAX_TOKENS, SYSTEM_PROMPT } from '../utils/constants'
 import type { ChatMessage } from '../types'
 
 /**
- * Servicio de chat vía OpenRouter (https://openrouter.ai).
+ * Servicio de chat del frontend.
  *
- * Usa el endpoint compatible con OpenAI y la función de "model fallback":
- * se envía una lista de modelos (MODELS) y si el primero falla o está saturado,
- * OpenRouter pasa automáticamente al siguiente.
+ * Ahora habla con NUESTRO backend (/api/chat), no con OpenRouter directamente.
+ * Ventaja clave: la API key del proveedor de IA vive en el servidor y NUNCA se
+ * expone en el navegador. El backend decide el proveedor (OpenRouter o Claude)
+ * y arma la base de conocimiento.
  *
- * ⚠️ SEGURIDAD: corre en el navegador y la key (VITE_OPENROUTER_API_KEY) queda
- * expuesta en el bundle. Aceptable para prototipo; para producción, mover la
- * llamada a una función serverless (ver README → "Despliegue seguro").
+ * El backend responde en streaming de texto plano (no SSE): cada fragmento que
+ * llega se agrega directo a la respuesta.
  */
 
-const API_URL = 'https://openrouter.ai/api/v1/chat/completions'
-const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY
-
-/** Indica si la API key está configurada (para mostrar avisos en la UI). */
-export const isApiKeyConfigured = Boolean(apiKey)
-
-/** Cabeceras comunes de la petición. */
-function buildHeaders(): HeadersInit {
-  return {
-    Authorization: `Bearer ${apiKey}`,
-    'Content-Type': 'application/json',
-    // OpenRouter usa este título para identificar la app (opcional).
-    'X-Title': 'Isla Chiquita Chatbot',
-  }
-}
-
-/** Construye el cuerpo de la petición con la cadena de modelos de respaldo. */
-function buildBody(history: ChatMessage[], stream: boolean) {
-  return JSON.stringify({
-    models: MODELS, // lista de respaldo: si uno falla, entra el siguiente
-    max_tokens: MAX_TOKENS,
-    stream,
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...history.map((m) => ({ role: m.role, content: m.content })),
-    ],
-  })
-}
-
-/** Convierte una respuesta de error en un mensaje amable en español. */
-async function toFriendlyError(res: Response): Promise<Error> {
-  let detail = ''
-  try {
-    const data = await res.json()
-    detail = data?.error?.message ?? ''
-  } catch {
-    /* respuesta sin JSON */
-  }
-
-  switch (res.status) {
-    case 401:
-      return new Error('La API key de OpenRouter no es válida. Revisa VITE_OPENROUTER_API_KEY en tu .env.local.')
-    case 402:
-      return new Error('Tu cuenta de OpenRouter no tiene saldo suficiente (o está en negativo).')
-    case 429:
-      return new Error('Los modelos gratuitos están saturados en este momento. Espera unos segundos e intenta de nuevo. 🙏')
-    default:
-      return new Error(detail || `Error del servicio (${res.status}). Intenta de nuevo en unos minutos.`)
-  }
-}
+// Base opcional del backend (para producción con dominio aparte). Vacío = mismo origen.
+const API_BASE = import.meta.env.VITE_API_BASE ?? ''
+const CHAT_URL = `${API_BASE}/api/chat`
+const LEAD_URL = `${API_BASE}/api/lead`
 
 /**
- * Envía el historial de conversación y transmite la respuesta en tiempo real
- * (streaming). Es la función que usa la UI para el efecto de "escribiendo".
+ * Envía el historial y transmite la respuesta del asistente en tiempo real.
  *
  * @param history  Historial de mensajes (usuario/asistente) en orden cronológico.
  * @param onText   Callback invocado con cada fragmento de texto recibido.
  * @param signal   AbortSignal opcional para cancelar la solicitud.
- * @returns        El texto completo de la respuesta del asistente, en español.
+ * @returns        El texto completo de la respuesta del asistente.
  */
 export async function streamChatResponse(
   history: ChatMessage[],
   onText: (delta: string) => void,
   signal?: AbortSignal,
 ): Promise<string> {
-  if (!isApiKeyConfigured) {
-    throw new Error(
-      'No se encontró la API key. Define VITE_OPENROUTER_API_KEY en tu archivo .env.local.',
-    )
-  }
-
-  const res = await fetch(API_URL, {
+  const res = await fetch(CHAT_URL, {
     method: 'POST',
-    headers: buildHeaders(),
-    body: buildBody(history, true),
+    headers: { 'Content-Type': 'application/json' },
     signal,
+    body: JSON.stringify({
+      messages: history.map((m) => ({ role: m.role, content: m.content })),
+    }),
   })
 
   if (!res.ok || !res.body) {
@@ -97,63 +45,49 @@ export async function streamChatResponse(
 
   const reader = res.body.getReader()
   const decoder = new TextDecoder()
-  let buffer = ''
   let full = ''
 
   while (true) {
     const { done, value } = await reader.read()
     if (done) break
-
-    buffer += decoder.decode(value, { stream: true })
-    const lines = buffer.split('\n')
-    buffer = lines.pop() ?? '' // la última línea puede estar incompleta
-
-    for (const line of lines) {
-      const trimmed = line.trim()
-      if (!trimmed.startsWith('data:')) continue // ignora comentarios/keepalive
-
-      const data = trimmed.slice(5).trim()
-      if (data === '[DONE]') continue
-
-      try {
-        const json = JSON.parse(data)
-        const delta: string | undefined = json?.choices?.[0]?.delta?.content
-        if (delta) {
-          full += delta
-          onText(delta)
-        }
-      } catch {
-        /* fragmento incompleto o evento sin contenido: se ignora */
-      }
+    const chunk = decoder.decode(value, { stream: true })
+    if (chunk) {
+      full += chunk
+      onText(chunk)
     }
   }
 
   return full
 }
 
-/**
- * Versión simple (sin streaming): devuelve la respuesta completa de una vez.
- *
- * @param history  Historial de mensajes en orden cronológico.
- * @returns        El texto completo de la respuesta del asistente, en español.
- */
-export async function sendMessage(history: ChatMessage[]): Promise<string> {
-  if (!isApiKeyConfigured) {
-    throw new Error(
-      'No se encontró la API key. Define VITE_OPENROUTER_API_KEY en tu archivo .env.local.',
-    )
-  }
+export interface LeadData {
+  name?: string
+  phone?: string
+  country?: string
+  email?: string
+  conversation?: string
+}
 
-  const res = await fetch(API_URL, {
+/** Envía los datos de contacto capturados por el chatbot al backend. */
+export async function submitLead(lead: LeadData): Promise<void> {
+  const res = await fetch(LEAD_URL, {
     method: 'POST',
-    headers: buildHeaders(),
-    body: buildBody(history, false),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(lead),
   })
+  if (!res.ok) throw await toFriendlyError(res)
+}
 
-  if (!res.ok) {
-    throw await toFriendlyError(res)
+/** Convierte una respuesta de error del backend en un mensaje amable. */
+async function toFriendlyError(res: Response): Promise<Error> {
+  let message = ''
+  try {
+    const data = await res.json()
+    message = data?.error ?? ''
+  } catch {
+    /* respuesta sin JSON */
   }
-
-  const data = await res.json()
-  return data?.choices?.[0]?.message?.content ?? ''
+  return new Error(
+    message || `Error del servicio (${res.status}). Intentá de nuevo en unos minutos.`,
+  )
 }

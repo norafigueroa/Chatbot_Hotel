@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ChatMessage } from '../types'
-import { isApiKeyConfigured, streamChatResponse } from '../services/chatService'
+import { streamChatResponse } from '../services/chatService'
 import { SUGGESTED_QUESTIONS, WELCOME_MESSAGE } from '../utils/constants'
+import ChatMarkdown from './ChatMarkdown'
 
 interface ChatBotProps {
   isOpen: boolean
@@ -143,14 +144,16 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
             }`}
           >
             <div
-              className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+              className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                 message.role === 'user'
-                  ? 'rounded-br-sm bg-brand-teal text-white'
+                  ? 'whitespace-pre-wrap rounded-br-sm bg-brand-teal text-white'
                   : 'rounded-bl-sm bg-white/10 text-white/90'
               }`}
             >
-              {message.content ||
-                (isLoading ? (
+              {message.role === 'assistant' ? (
+                message.content ? (
+                  <ChatMarkdown content={message.content} />
+                ) : isLoading ? (
                   <span className="inline-flex gap-1">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/60 [animation-delay:-0.3s]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/60 [animation-delay:-0.15s]" />
@@ -158,7 +161,10 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
                   </span>
                 ) : (
                   ''
-                ))}
+                )
+              ) : (
+                message.content
+              )}
             </div>
           </div>
         ))}
@@ -184,14 +190,6 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
           </div>
         )}
       </div>
-
-      {/* Aviso si falta la API key */}
-      {!isApiKeyConfigured && (
-        <div className="bg-amber-500/20 px-4 py-2 text-[11px] text-amber-100">
-          Configura <code>VITE_OPENROUTER_API_KEY</code> en tu archivo{' '}
-          <code>.env.local</code> para activar el chat.
-        </div>
-      )}
 
       {/* Entrada de texto */}
       <form
