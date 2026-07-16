@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ChatMessage } from '../types'
-import { streamChatResponse } from '../services/chatService'
+import { streamChatResponse, submitLead, type LeadData } from '../services/chatService'
 import { SUGGESTED_QUESTIONS, WELCOME_MESSAGE } from '../utils/constants'
 import ChatMarkdown from './ChatMarkdown'
+import LeadForm from './LeadForm'
 
 interface ChatBotProps {
   isOpen: boolean
@@ -23,6 +24,11 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Captura de datos de contacto (leads).
+  const [leadOpen, setLeadOpen] = useState(false)
+  const [leadSubmitting, setLeadSubmitting] = useState(false)
+  const [leadDone, setLeadDone] = useState(false)
+
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -32,7 +38,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       top: scrollRef.current.scrollHeight,
       behavior: 'smooth',
     })
-  }, [messages, isLoading])
+  }, [messages, isLoading, leadOpen, leadDone])
 
   // Enfocar el input al abrir el chat.
   useEffect(() => {
@@ -90,6 +96,43 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
     void sendMessage(input)
+  }
+
+  /** Arma un resumen breve de la conversación para dar contexto al hotel. */
+  function buildConversationSummary(): string {
+    return messages
+      .filter((m) => m.id !== 'welcome' && m.content.trim())
+      .slice(-8)
+      .map((m) => `${m.role === 'user' ? 'Cliente' : 'Bot'}: ${m.content}`)
+      .join('\n')
+      .slice(0, 1500)
+  }
+
+  async function handleLeadSubmit(data: LeadData) {
+    setError(null)
+    setLeadSubmitting(true)
+    try {
+      await submitLead({ ...data, conversation: buildConversationSummary() })
+      setLeadOpen(false)
+      setLeadDone(true)
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: createId(),
+          role: 'assistant',
+          content:
+            '¡Gracias! 🌿 Recibimos tus datos. Un agente del hotel te contactará pronto en horario de oficina. ¿Puedo ayudarte con algo más?',
+        },
+      ])
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'No pudimos enviar tus datos. Intentá de nuevo.',
+      )
+    } finally {
+      setLeadSubmitting(false)
+    }
   }
 
   if (!isOpen) return null
@@ -184,12 +227,31 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
           </div>
         )}
 
+        {/* Formulario de captura de datos (leads) */}
+        {leadOpen && (
+          <LeadForm
+            onSubmit={handleLeadSubmit}
+            onCancel={() => setLeadOpen(false)}
+            isSubmitting={leadSubmitting}
+          />
+        )}
+
         {error && (
           <div className="rounded-lg bg-red-500/20 px-3 py-2 text-xs text-red-200">
             {error}
           </div>
         )}
       </div>
+
+      {/* CTA para dejar datos de contacto */}
+      {!leadOpen && !leadDone && (
+        <button
+          onClick={() => setLeadOpen(true)}
+          className="border-t border-white/10 bg-brand-teal/15 px-4 py-2 text-xs font-medium text-brand-teal transition-colors hover:bg-brand-teal/25"
+        >
+          📋 ¿Querés que te contactemos? Dejá tus datos
+        </button>
+      )}
 
       {/* Entrada de texto */}
       <form
