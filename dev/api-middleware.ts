@@ -13,6 +13,7 @@
 import type { Plugin } from 'vite'
 import type { IncomingMessage } from 'node:http'
 import { Readable } from 'node:stream'
+import { resolve } from 'node:path'
 
 export function apiDevServer(): Plugin {
   return {
@@ -27,8 +28,11 @@ export function apiDevServer(): Plugin {
         const route = url.split('?')[0].replace(/^\/api\//, '').replace(/\/$/, '')
 
         try {
-          // Ruta relativa a la raíz del proyecto (Vite la resuelve así).
-          const mod = await server.ssrLoadModule(`/api/${route}.ts`)
+          // La carpeta api/ está en la RAÍZ del repo (no dentro de frontend/,
+          // que es el root de Vite). Por eso se resuelve con ruta absoluta desde
+          // process.cwd() (donde corre `npm run dev`).
+          const file = resolve(process.cwd(), 'api', `${route}.ts`).replace(/\\/g, '/')
+          const mod = await server.ssrLoadModule(file)
           const handler = mod.default
 
           if (typeof handler !== 'function') {

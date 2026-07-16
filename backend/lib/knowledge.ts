@@ -11,7 +11,7 @@
  *      funcione igual durante el desarrollo).
  */
 
-import { FAQS, CATEGORY_LABELS, type Faq, type FaqCategory } from '../../db/faqs.seed'
+import { FAQS, CATEGORY_LABELS, type Faq, type FaqCategory } from '../db/faqs.seed'
 import { getFaqsFromDb } from './supabase'
 
 const PERSONA = `Eres el asistente virtual de Isla Chiquita Glamping Hotel, el único hotel de glamping en una isla de Costa Rica (Isla Jesusita, Golfo de Nicoya).

@@ -12,6 +12,14 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    // El código del frontend vive en frontend/. El build sale a /dist en la raíz
+    // (donde Vercel lo espera).
+    root: 'frontend',
+    publicDir: 'public',
+    build: {
+      outDir: '../dist',
+      emptyOutDir: true,
+    },
     plugins: [react(), apiDevServer()],
   }
 })

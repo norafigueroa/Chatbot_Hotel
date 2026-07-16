@@ -13,7 +13,7 @@
  * y el resto del backend usa el respaldo local (seed) sin romperse.
  */
 
-import type { Faq } from '../../db/faqs.seed'
+import type { Faq } from '../db/faqs.seed'
 
 const URL = process.env.SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY

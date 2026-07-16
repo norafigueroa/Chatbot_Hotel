@@ -11,8 +11,8 @@
  * Corre en el runtime Edge de Vercel (ideal para streaming).
  */
 
-import { streamChat, LlmError, type ChatTurn } from './_lib/llm'
-import { buildSystemPrompt } from './_lib/knowledge'
+import { streamChat, LlmError, type ChatTurn } from '../backend/lib/llm'
+import { buildSystemPrompt } from '../backend/lib/knowledge'
 
 export const config = { runtime: 'edge' }
 

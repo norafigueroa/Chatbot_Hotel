@@ -20,7 +20,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, join } from 'node:path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const root = join(__dirname, '..')
+const root = join(__dirname, '..', '..') // backend/scripts -> raíz del repo
+const dbDir = join(__dirname, '..', 'db') // backend/db
 
 // Carga simple de .env.local (sin dependencias).
 try {
@@ -38,11 +39,11 @@ const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 if (!URL || !KEY) {
   console.error('❌ Faltan SUPABASE_URL y/o SUPABASE_SERVICE_ROLE_KEY.')
-  console.error('   Ponelas en .env.local y volvé a correr: node scripts/seed.mjs')
+  console.error('   Ponelas en .env.local y volvé a correr: node backend/scripts/seed.mjs')
   process.exit(1)
 }
 
-const { FAQS } = await import(pathToFileURL(join(root, 'db', 'faqs.seed.ts')).href)
+const { FAQS } = await import(pathToFileURL(join(dbDir, 'faqs.seed.ts')).href)
 console.log(`Cargando ${FAQS.length} FAQs a Supabase…`)
 
 const rows = FAQS.map((f) => ({

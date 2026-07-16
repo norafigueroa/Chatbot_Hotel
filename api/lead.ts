@@ -12,8 +12,8 @@
  * se pierde).
  */
 
-import { insertLead, type LeadInput } from './_lib/supabase'
-import { sendLeadEmail } from './_lib/email'
+import { insertLead, type LeadInput } from '../backend/lib/supabase'
+import { sendLeadEmail } from '../backend/lib/email'
 
 export const config = { runtime: 'edge' }
 
