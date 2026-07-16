@@ -37,12 +37,14 @@ export default function FloatingWidgets({
 
       {/* Stack derecho: chatbot arriba, WhatsApp abajo */}
       <div className="pointer-events-auto flex flex-col items-center gap-3">
-        {/* Lanzador del chatbot ✨ */}
+        {/* Lanzador del chatbot */}
         <button
           onClick={onToggleChat}
           aria-label={chatOpen ? 'Cerrar chat' : 'Abrir chat'}
           aria-expanded={chatOpen}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-teal text-2xl shadow-lg transition-transform duration-300 hover:scale-110"
+          className={`flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform duration-300 hover:scale-110 ${
+            chatOpen ? 'bg-brand-teal' : ''
+          }`}
         >
           {chatOpen ? (
             <svg
@@ -60,9 +62,12 @@ export default function FloatingWidgets({
               />
             </svg>
           ) : (
-            <span className="animate-pulse-glow" aria-hidden="true">
-              ✨
-            </span>
+            <img
+              src="/Burbuja.png"
+              alt=""
+              aria-hidden="true"
+              className="h-14 w-14 animate-pulse-glow object-contain drop-shadow-lg"
+            />
           )}
         </button>
 
