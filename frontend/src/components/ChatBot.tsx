@@ -187,7 +187,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
             }`}
           >
             <div
-              className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+              className={`max-w-[85%] break-words rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                 message.role === 'user'
                   ? 'whitespace-pre-wrap rounded-br-sm bg-brand-teal text-white'
                   : 'rounded-bl-sm bg-white/10 text-white/90'

@@ -15,7 +15,7 @@ import remarkBreaks from 'remark-breaks'
  */
 export default function ChatMarkdown({ content }: { content: string }) {
   return (
-    <div className="space-y-2 [&_p]:leading-relaxed">
+    <div className="space-y-2 break-words [overflow-wrap:anywhere] [&_p]:leading-relaxed">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkBreaks]}
         components={{
@@ -24,7 +24,7 @@ export default function ChatMarkdown({ content }: { content: string }) {
               {...props}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-brand-teal underline underline-offset-2 hover:opacity-80"
+              className="text-brand-teal underline underline-offset-2 [overflow-wrap:anywhere] hover:opacity-80"
             />
           ),
           ul: ({ node, ...props }) => (
