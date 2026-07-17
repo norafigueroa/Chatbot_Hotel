@@ -66,6 +66,10 @@ function sanitizeMessages(raw: unknown): ChatTurn[] | null {
     if (!trimmed) continue
     out.push({ role, content: trimmed.slice(0, MAX_CHARS) })
   }
+  // La conversación debe empezar con el usuario: descartamos turnos iniciales
+  // del asistente (p. ej. el mensaje de bienvenida de la UI). Es necesario para
+  // Claude (exige que el primer turno sea del usuario) y más limpio en general.
+  while (out.length && out[0].role === 'assistant') out.shift()
   return out.length ? out : null
 }
 
