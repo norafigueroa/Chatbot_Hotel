@@ -32,14 +32,14 @@ export default function LeadForm({ onSubmit, onCancel, isSubmitting }: LeadFormP
   }
 
   const fieldClass =
-    'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-brand-teal focus:outline-none disabled:opacity-50'
+    'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-brand-teal focus:outline-none disabled:opacity-50'
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-2 rounded-2xl rounded-bl-sm bg-white/10 p-3"
+      className="space-y-2 rounded-2xl border border-brand-teal/20 bg-brand-teal/5 p-3"
     >
-      <p className="text-sm font-semibold text-white/90">
+      <p className="text-sm font-semibold text-brand-teal">
         Dejanos tus datos y un agente te contacta 🌿
       </p>
       <input
@@ -74,7 +74,7 @@ export default function LeadForm({ onSubmit, onCancel, isSubmitting }: LeadFormP
         disabled={isSubmitting}
         className={fieldClass}
       />
-      <p className="text-[11px] text-white/40">
+      <p className="text-[11px] text-gray-400">
         * Nombre y al menos un teléfono o correo.
       </p>
       <div className="flex gap-2 pt-1">
@@ -89,7 +89,7 @@ export default function LeadForm({ onSubmit, onCancel, isSubmitting }: LeadFormP
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition-colors hover:bg-white/5 disabled:opacity-40"
+          className="rounded-full border border-black/15 px-4 py-2 text-sm text-gray-500 transition-colors hover:bg-black/5 disabled:opacity-40"
         >
           Cancelar
         </button>

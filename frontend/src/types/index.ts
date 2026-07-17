@@ -6,6 +6,8 @@ export interface ChatMessage {
   id: string
   role: ChatRole
   content: string
+  /** Hora fija de envío para mostrar bajo la burbuja (ej. "10:42 p. m."). */
+  time?: string
 }
 
 /** Resumen de reseñas mostrado en la tarjeta flotante del hero. */

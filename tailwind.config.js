@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        'brand-teal': '#4c6c6c',
+        'brand-teal': '#4b7576',
         'brand-dark': '#111111',
       },
       fontFamily: {

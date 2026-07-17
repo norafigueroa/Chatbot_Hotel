@@ -105,10 +105,23 @@ export const WELCOME_MESSAGE =
   '¡Hola! 🌿 Soy el asistente de Isla Chiquita. Puedo ayudarte con cómo llegar, las tiendas de glamping, experiencias, ofertas y la bioluminiscencia del Golfo de Nicoya. ¿En qué te ayudo?'
 
 // Preguntas sugeridas para arrancar la conversación.
-export const SUGGESTED_QUESTIONS = [
-  '¿Cómo llego a Isla Chiquita?',
-  '¿Qué es la bioluminiscencia?',
-  '¿Qué experiencias ofrecen?',
+// `label` es el texto corto del botón; `question` es lo que realmente se envía.
+export type SuggestionIcon = 'map' | 'tent' | 'sparkle'
+
+export interface SuggestedQuestion {
+  label: string
+  question: string
+  icon: SuggestionIcon
+}
+
+export const SUGGESTED_QUESTIONS: SuggestedQuestion[] = [
+  { label: '¿Cómo llego?', question: '¿Cómo llego a Isla Chiquita?', icon: 'map' },
+  {
+    label: 'Glamping',
+    question: '¿Qué tipos de alojamiento (tiendas de glamping) tienen?',
+    icon: 'tent',
+  },
+  { label: 'Bioluminiscencia', question: '¿Qué es la bioluminiscencia?', icon: 'sparkle' },
 ]
 
 // Enlace de WhatsApp del hotel (reemplazar por el número real).

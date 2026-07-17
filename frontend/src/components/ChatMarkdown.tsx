@@ -24,7 +24,7 @@ export default function ChatMarkdown({ content }: { content: string }) {
               {...props}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-brand-teal underline underline-offset-2 [overflow-wrap:anywhere] hover:opacity-80"
+              className="font-medium text-white underline underline-offset-2 [overflow-wrap:anywhere] hover:text-white/80"
             />
           ),
           ul: ({ node, ...props }) => (
