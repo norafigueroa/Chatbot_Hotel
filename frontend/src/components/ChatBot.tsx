@@ -24,6 +24,18 @@ function nowTime(): string {
   return new Date().toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' })
 }
 
+/**
+ * El bot marca con [[LEAD_FORM]] cuando quiere ofrecer el formulario de datos.
+ * Esta función quita el token (y cualquier fragmento parcial al final durante el
+ * streaming) para no mostrarlo al usuario.
+ */
+function stripLeadToken(s: string): string {
+  return s
+    .replace(/\[\[LEAD_FORM\]\]/gi, '')
+    .replace(/\[\[?LEAD[_A-Z]*\]?\]?\s*$/i, '')
+    .trim()
+}
+
 /** Íconos para las preguntas sugeridas. */
 function ChipIcon({ name }: { name: SuggestionIcon }) {
   const props = {
@@ -239,6 +251,8 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       >
         {messages.map((message) => {
           const isUser = message.role === 'user'
+          const wantsForm = !isUser && /\[\[LEAD_FORM\]\]/i.test(message.content)
+          const display = isUser ? message.content : stripLeadToken(message.content)
           return (
             <div
               key={message.id}
@@ -257,9 +271,9 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
                       : 'rounded-bl-sm bg-brand-teal text-white'
                   }`}
                 >
-                  {message.role === 'assistant' ? (
-                    message.content ? (
-                      <ChatMarkdown content={message.content} />
+                  {!isUser ? (
+                    display ? (
+                      <ChatMarkdown content={display} />
                     ) : isLoading ? (
                       <span className="inline-flex gap-1">
                         <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/70 [animation-delay:-0.3s]" />
@@ -274,8 +288,30 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
                   )}
                 </div>
               </div>
-              {message.content.trim() && message.time && (
+              {display.trim() && message.time && (
                 <span className="px-1 text-[10px] text-gray-400">{message.time}</span>
+              )}
+              {wantsForm && !leadOpen && !leadDone && (
+                <button
+                  onClick={() => setLeadOpen(true)}
+                  className="ml-10 flex items-center gap-1.5 rounded-full bg-brand-teal px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-teal/80"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.8}
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"
+                    />
+                  </svg>
+                  Dejar mis datos
+                </button>
               )}
             </div>
           )
