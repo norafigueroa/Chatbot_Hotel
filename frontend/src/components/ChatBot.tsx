@@ -142,9 +142,12 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       {/* Encabezado */}
       <div className="flex items-center justify-between bg-brand-teal px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-lg" aria-hidden="true">
-            ✨
-          </span>
+          <img
+            src="/Logo_Modal.png"
+            alt=""
+            aria-hidden="true"
+            className="h-12 w-12 shrink-0 object-contain"
+          />
           <div>
             <p className="text-sm font-bold leading-tight">Isla Chiquita</p>
             <p className="text-[10px] uppercase tracking-wider text-white/70">

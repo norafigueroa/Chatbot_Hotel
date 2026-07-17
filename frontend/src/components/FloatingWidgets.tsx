@@ -62,7 +62,7 @@ export default function FloatingWidgets({
           onBlur={() => setShowTip(false)}
           aria-label={chatOpen ? 'Cerrar chat' : 'Abrir chat'}
           aria-expanded={chatOpen}
-          className={`flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform duration-300 hover:scale-110 ${
+          className={`flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition-transform duration-300 hover:scale-110 ${
             chatOpen ? 'bg-brand-teal' : ''
           }`}
         >
@@ -83,10 +83,10 @@ export default function FloatingWidgets({
             </svg>
           ) : (
             <img
-              src="/Burbuja.png"
+              src="/Burbuja_Chat.png"
               alt=""
               aria-hidden="true"
-              className="h-14 w-14 animate-pulse-glow object-contain drop-shadow-lg"
+              className="h-16 w-16 animate-pulse-glow object-contain drop-shadow-lg"
             />
           )}
         </button>
