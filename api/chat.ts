@@ -13,6 +13,7 @@
 
 import { streamChat, LlmError, type ChatTurn } from '../backend/lib/llm'
 import { buildSystemPrompt } from '../backend/lib/knowledge'
+import { isWeatherQuery, getWeatherContext } from '../backend/lib/weather'
 
 export const config = { runtime: 'edge' }
 
@@ -37,7 +38,17 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   try {
-    const system = await buildSystemPrompt()
+    let system = await buildSystemPrompt()
+
+    // Si la última pregunta es sobre el clima, inyectamos el dato real en vivo.
+    const lastUser = [...messages].reverse().find((m) => m.role === 'user')
+    if (lastUser && isWeatherQuery(lastUser.content)) {
+      const weather = await getWeatherContext(req.signal)
+      if (weather) {
+        system += `\n\n[CLIMA EN VIVO] ${weather}\nUsá este dato real para responder sobre el clima de hoy, con tu tono cálido. No inventes el clima. Si preguntan por fechas futuras lejanas, aclará que conviene confirmarlo cerca de la fecha.`
+      }
+    }
+
     const stream = await streamChat({ system, messages, signal: req.signal })
 
     return new Response(stream, {
