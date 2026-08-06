@@ -124,8 +124,8 @@ export const FAQS: Faq[] = [
     category: 'alojamiento',
     question: '¿Todas las habitaciones tienen aire acondicionado?',
     answer:
-      'No todas; algunas tienen solo abanico. Puede revisar el detalle en el sitio web: https://www.islachiquitacostarica.com/es',
-    keywords: ['aire acondicionado', 'a/c', 'abanico', 'habitaciones'],
+      'No todas. Con aire acondicionado tenemos: la Premium Tent con A/C, la Family Tent Suite, la Casita y la Master Suite. Las demás cuentan con abanicos. Podés ver más detalle en https://www.islachiquitacostarica.com/es',
+    keywords: ['aire acondicionado', 'a/c', 'abanico', 'habitaciones', 'ac', 'clima'],
   },
   {
     ref: 10,
@@ -156,8 +156,10 @@ export const FAQS: Faq[] = [
     category: 'gastronomia',
     question: '¿En el hotel hay restaurante?',
     answer:
-      'Sí, tenemos el Restaurante Tía Nora y el icónico Harry’s Bar, con una increíble vista y servicio.',
-    keywords: ['restaurante', 'tía nora', 'harrys bar', 'comida'],
+      'Sí, tenemos dos, ambos al aire libre con vista al Golfo de Nicoya:\n' +
+      '- Donde Tía Nora: nuestro restaurante principal, de mariscos frescos de pesca artesanal e ingredientes regionales; ideal para una comida o cena completa.\n' +
+      '- Harry’s Bar & Restaurant: más informal, con almuerzos ligeros, coctelería tropical, vinos y cervezas; también es el punto de encuentro para eventos.',
+    keywords: ['restaurante', 'tía nora', 'harrys bar', 'comida', 'bar', 'mariscos'],
   },
   {
     ref: 14,
@@ -310,10 +312,10 @@ export const FAQS: Faq[] = [
   {
     ref: 34,
     category: 'amenidades',
-    question: '¿El hotel tiene deck de yoga?',
+    question: '¿El hotel tiene deck de yoga? ¿Ofrecen clases?',
     answer:
-      'Sí, el hotel tiene un deck de yoga con una increíble vista, a su disposición para su relajación personal. Para grupos, podemos cotizar.',
-    keywords: ['yoga', 'deck', 'bienestar'],
+      'Sí tenemos un deck de yoga con una vista increíble al mar (el deck principal no es techado). No ofrecemos clases de yoga, pero todas las suites cuentan con mat de yoga y podés practicar en la terraza de tu tienda o en el deck.',
+    keywords: ['yoga', 'deck', 'bienestar', 'clases', 'mat'],
   },
   {
     ref: 35,
@@ -766,5 +768,119 @@ export const FAQS: Faq[] = [
     answer:
       'Toda reserva de hospedaje incluye: desayuno, uso de kayaks y tablas de remo durante toda la estadía, y el traslado ida y vuelta en bote desde Paquera hasta el hotel.',
     keywords: ['incluye', 'reservación', 'hospedaje', 'desayuno', 'kayak', 'traslado'],
+  },
+  {
+    ref: 94,
+    category: 'parqueo',
+    question: '¿Puedo dejar mi carro en Puntarenas (sin pasarlo en el ferry)?',
+    answer:
+      'Sí, no hace falta pasar el vehículo en el ferry. Podés dejarlo en Puntarenas, en el parqueo de Cabinas Frank (diagonal a la entrada del Ferry de Tambor) y cruzar a pie. Te recomendamos llamar antes: tel. 2661-2503.\n📍 [Cómo llegar a Cabinas Frank (Waze)](https://www.waze.com/en/live-map/directions/cr/provincia-de-puntarenas/puntarenas/cabinas-frank?place=ChIJJcVM7cguoI8R_GjqkiK0qV0)',
+    keywords: ['carro', 'auto', 'vehículo', 'parqueo', 'puntarenas', 'cabinas frank', 'ferry', 'dejar carro'],
+  },
+  {
+    ref: 95,
+    category: 'general',
+    question: '¿Hay zancudos o mosquitos?',
+    answer:
+      'Sí, al ser una isla en zona tropical, te recomendamos traer repelente. 🦟',
+    keywords: ['zancudos', 'mosquitos', 'repelente', 'insectos', 'bichos'],
+  },
+  {
+    ref: 96,
+    category: 'ocasiones',
+    question: '¿Tienen queques o pasteles para cumpleaños?',
+    answer:
+      '¡Sí! Podemos coordinar un pastel pequeño para 8 personas por un costo adicional de $25 (impuestos incluidos). Avisanos con anticipación para prepararlo.',
+    keywords: ['queque', 'pastel', 'torta', 'cake', 'cumpleaños', 'celebración'],
+  },
+  {
+    ref: 97,
+    category: 'ocasiones',
+    question: '¿Puedo coordinar un arreglo de flores?',
+    answer:
+      '¡Claro! Nos ajustamos a tu presupuesto. Contanos qué tipo de arreglo querés y cuánto pensás invertir, y armamos el pedido a tu medida.',
+    keywords: ['flores', 'arreglo floral', 'ramo', 'sorpresa', 'decoración'],
+  },
+  {
+    ref: 98,
+    category: 'amenidades',
+    question: '¿Hay secador de pelo en las habitaciones?',
+    answer: 'Sí, todas las habitaciones cuentan con secador de pelo.',
+    keywords: ['secador', 'pelo', 'cabello', 'hair dryer'],
+  },
+  {
+    ref: 99,
+    category: 'alojamiento',
+    question: '¿Qué medidas tienen las tiendas?',
+    answer:
+      'Nuestras tiendas miden alrededor de 35 m². Hay opciones con cama King y una cama sencilla, o con 2 camas dobles. La terraza/deck mide 3.50 × 6.60 m.',
+    keywords: ['medidas', 'tamaño', 'metros', 'dimensiones', 'tienda', 'habitación'],
+  },
+  {
+    ref: 100,
+    category: 'amenidades',
+    question: '¿Cuánto mide la piscina principal?',
+    answer: 'La piscina principal mide 8.10 × 4.22 m.',
+    keywords: ['piscina', 'principal', 'medida', 'tamaño'],
+  },
+  {
+    ref: 101,
+    category: 'alojamiento',
+    question: '¿Cuánto miden las piscinas privadas de las habitaciones?',
+    answer: 'Las piscinas privadas de las habitaciones miden 2 × 2 m y no son temperadas.',
+    keywords: ['piscina privada', 'plunge', 'medida', 'temperada', 'habitación'],
+  },
+  {
+    ref: 102,
+    category: 'gastronomia',
+    question: '¿La cena del 31 de diciembre es obligatoria?',
+    answer:
+      'Sí, la cena del 31 de diciembre es obligatoria para todos los huéspedes. Tiene un costo de $100 +23% (13% IVA + 10% servicio) por adulto y $50 +23% por niño de 4 a 11 años. Incluye música en vivo (cantante y DJ), cena buffet y una copa de espumante. 🥂',
+    keywords: ['cena', '31 diciembre', 'fin de año', 'año nuevo', 'obligatoria', 'navidad'],
+  },
+  {
+    ref: 103,
+    category: 'gastronomia',
+    question: '¿Hay cena obligatoria el 24 de diciembre?',
+    answer:
+      'Para el 24 de diciembre ofrecemos un menú a la carta y no es obligatorio.',
+    keywords: ['cena', '24 diciembre', 'nochebuena', 'navidad', 'obligatoria'],
+  },
+  {
+    ref: 104,
+    category: 'alojamiento',
+    question: '¿Cuál es la capacidad máxima por tipo de tienda?',
+    answer:
+      'La capacidad depende del tipo de alojamiento:\n' +
+      '- Tiendas estándar: la tarifa es por ocupación doble; capacidad máxima de 3 adultos o 2 adultos + 2 niños. Cada persona extra cuesta $50 + impuestos.\n' +
+      '- Tent Suite (2 camas dobles): ideal para familias, admite más personas que la de cama King (pensada para parejas).\n' +
+      '- Family Tent Suite (con A/C): dos unidades que se alquilan juntas, ideal para familias.\n' +
+      '- Master Sunset Suite: cama King más 2 day beds.\n' +
+      '- Casita Ocean View: la de mayor capacidad, hasta 10 personas, con 2 o 3 dormitorios, palapa con sala, cocina equipada y piscina privada.',
+    keywords: ['capacidad', 'personas', 'máximo', 'ocupación', 'grupo', 'cuántas personas', 'niños'],
+  },
+  {
+    ref: 105,
+    category: 'politicas',
+    question: '¿Se puede fumar en las terrazas o el restaurante?',
+    answer:
+      'Por la legislación vigente en Costa Rica, no está permitido fumar en las áreas comunes del hotel, incluida la terraza de la habitación. Agradecemos tu comprensión y colaboración.',
+    keywords: ['fumar', 'fumado', 'cigarro', 'vapear', 'terraza', 'tabaco'],
+  },
+  {
+    ref: 106,
+    category: 'general',
+    question: '¿Hace mucho calor en la isla?',
+    answer:
+      'El clima de la isla es tropical y cálido. Como las tiendas son de lona, tenemos opciones con aire acondicionado (Premium con A/C, Family Tent Suite, Casita y Master Suite): el A/C ayuda, aunque por ser lona no enfría al 100%. Además, todas las tiendas cuentan con abanicos.',
+    keywords: ['calor', 'caluroso', 'temperatura', 'clima', 'aire acondicionado', 'abanico'],
+  },
+  {
+    ref: 107,
+    category: 'gastronomia',
+    question: '¿Qué tipo de comida ofrecen?',
+    answer:
+      'Ofrecemos cocina local con ingredientes naturales y de alta calidad, para todos los gustos. Podemos adaptar los menús a alergias o restricciones alimentarias si nos avisás con anticipación.',
+    keywords: ['comida', 'alimentación', 'menú', 'cocina', 'tipo de comida', 'gastronomía'],
   },
 ]
