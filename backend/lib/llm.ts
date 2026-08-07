@@ -62,7 +62,7 @@ function openProviderStream(opts: StreamOptions): Promise<ReadableStream<Uint8Ar
  */
 export async function streamChat(
   opts: StreamOptions,
-  maxAttempts = 2,
+  maxAttempts = 3,
 ): Promise<ReadableStream<Uint8Array>> {
   const enc = encoder()
 
