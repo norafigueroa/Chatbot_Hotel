@@ -42,13 +42,83 @@ const OPENROUTER_MODELS = (
 
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-5'
 
+/** Abre el stream del proveedor activo (sin reintentos). */
+function openProviderStream(opts: StreamOptions): Promise<ReadableStream<Uint8Array>> {
+  if (PROVIDER === 'anthropic') return streamAnthropic(opts)
+  return streamOpenRouter(opts)
+}
+
 /**
  * Envía la conversación al proveedor activo y devuelve un ReadableStream de
  * texto plano (los fragmentos de la respuesta, en orden).
+ *
+ * Resiliencia ante respuestas VACÍAS: el modelo gratis a veces devuelve un
+ * stream sin contenido. Aquí "espiamos" el primer fragmento: si llega texto, se
+ * transmite normal (streaming intacto); si el stream termina sin contenido, se
+ * REINTENTA. Tras agotar los intentos, se envía un mensaje amable para que el
+ * usuario nunca vea una respuesta en blanco.
+ *
+ * Los errores reales (401, 402, 429, etc.) NO se reintentan: se propagan tal cual.
  */
-export async function streamChat(opts: StreamOptions): Promise<ReadableStream<Uint8Array>> {
-  if (PROVIDER === 'anthropic') return streamAnthropic(opts)
-  return streamOpenRouter(opts)
+export async function streamChat(
+  opts: StreamOptions,
+  maxAttempts = 2,
+): Promise<ReadableStream<Uint8Array>> {
+  const enc = encoder()
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    // openProviderStream lanza LlmError en errores reales -> se propaga (sin reintento).
+    const upstream = await openProviderStream(opts)
+    const reader = upstream.getReader()
+
+    // Espiar hasta el primer fragmento con contenido (o fin del stream).
+    let firstChunk: Uint8Array | null = null
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      if (value && value.byteLength > 0) {
+        firstChunk = value
+        break
+      }
+    }
+
+    if (firstChunk) {
+      // Hubo contenido: emitimos el primer fragmento y seguimos transmitiendo.
+      return new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(firstChunk as Uint8Array)
+        },
+        async pull(controller) {
+          try {
+            const { done, value } = await reader.read()
+            if (done) {
+              controller.close()
+              return
+            }
+            if (value) controller.enqueue(value)
+          } catch (err) {
+            controller.error(err)
+          }
+        },
+        cancel() {
+          reader.cancel().catch(() => {})
+        },
+      })
+    }
+
+    // Stream vacío: liberamos y reintentamos (si quedan intentos).
+    reader.releaseLock()
+  }
+
+  // Todos los intentos vinieron vacíos: mensaje amable en vez de blanco.
+  const fallback =
+    'Disculpá, no pude generar una respuesta en este momento. ¿Podés reformular tu pregunta o intentar de nuevo en un ratito? 🙏'
+  return new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(enc.encode(fallback))
+      controller.close()
+    },
+  })
 }
 
 /** Codifica texto a Uint8Array para el stream de salida. */
