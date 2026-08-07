@@ -146,10 +146,10 @@ export const FAQS: Faq[] = [
   {
     ref: 12,
     category: 'tours',
-    question: '¿Qué actividades ofrece el hotel?',
+    question: '¿Qué actividades o experiencias se pueden hacer en la isla?',
     answer:
-      'Puede ver toda la información de las actividades en: https://www.islachiquitacostarica.com/es/experiencias',
-    keywords: ['actividades', 'experiencias', 'tours'],
+      'En la isla hay mucho para disfrutar: kayaks y tablas de remo (incluidos), piscina, el sendero Simbiosis, deck de yoga, tour de bioluminiscencia, avistamiento de ballenas (agosto–octubre), snorkeling, paseos en bote y spa. Podés ver todas nuestras experiencias aquí: [islachiquitacostarica.com/experiences](https://www.islachiquitacostarica.com/experiences)',
+    keywords: ['actividades', 'experiencias', 'tours', 'qué hacer', 'qué se puede hacer', 'que hacer en la isla'],
   },
   {
     ref: 13,
@@ -663,7 +663,7 @@ export const FAQS: Faq[] = [
     category: 'tours',
     question: '¿Ofrecen paseos en bote?',
     answer:
-      'Sí, tenemos varias opciones disponibles. Puede ver la oferta completa en: https://www.islachiquitacostarica.com/es/experiencias',
+      'Sí, tenemos varias opciones disponibles. Podés ver todas nuestras experiencias aquí: [islachiquitacostarica.com/experiences](https://www.islachiquitacostarica.com/experiences)',
     keywords: ['paseos', 'bote', 'tours', 'navegación'],
   },
   {
