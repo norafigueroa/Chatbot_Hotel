@@ -448,12 +448,13 @@ export const FAQS: Faq[] = [
   {
     ref: 51,
     category: 'llegar',
-    question: '¿Cuál es el horario de los botes para entrar y salir de la isla?',
+    question: '¿Cuáles son los horarios de los botes (taxi acuático) para entrar y salir de la isla?',
     answer:
-      'Taxi acuático del hotel para check-in / entrada: 10:30 a. m., 11:30 a. m., 1:30 p. m., 2:45 p. m. y 4:45 p. m.\n' +
-      'Taxi acuático del hotel para check-out / salida: 8:00 a. m., 9:00 a. m., 10:15 a. m., 11:15 a. m., 1:15 p. m., 2:00 p. m. y 5:00 p. m.\n' +
-      'El bote sale del muelle del ferry de Paquera o desde nuestro parqueo en Punta Cuchillos. (Horarios sujetos a cambio; conviene coordinarlos con el hotel.)',
-    keywords: ['horario', 'botes', 'taxi acuático', 'entrada', 'salida', 'check-in', 'check-out'],
+      'Estos son los horarios de nuestros botes (taxi acuático). Salen del muelle del ferry de Paquera o desde nuestro parqueo en Punta Cuchillos:\n' +
+      'Hacia la isla (llegada): 10:30 a. m., 11:30 a. m., 1:30 p. m., 2:45 p. m. y 4:45 p. m.\n' +
+      'Desde la isla (salida): 8:00 a. m., 9:00 a. m., 10:15 a. m., 11:15 a. m., 1:15 p. m., 2:00 p. m. y 5:00 p. m.\n' +
+      '(Horarios sujetos a cambio; conviene coordinarlos con nosotros.)',
+    keywords: ['horario', 'botes', 'taxi acuático', 'lancha', 'entrada', 'salida', 'horarios de bote'],
   },
   {
     ref: 52,
@@ -490,10 +491,10 @@ export const FAQS: Faq[] = [
   {
     ref: 56,
     category: 'politicas',
-    question: '¿Puedo llegar temprano al hotel?',
+    question: '¿A qué hora es el check-in del hotel? ¿Puedo llegar antes?',
     answer:
-      'El check-in es a las 2:00 p. m., pero puede llegar a partir de las 8:00 a. m. y usar las instalaciones mientras la habitación está lista. Guardamos con gusto su equipaje en la recepción.',
-    keywords: ['temprano', 'check-in', 'llegar', 'equipaje', 'horario'],
+      'El check-in del hotel es a las 2:00 p. m. Igual podés llegar desde las 8:00 a. m. y usar las instalaciones mientras alistamos tu tienda; con gusto guardamos tu equipaje en la recepción.',
+    keywords: ['check-in', 'checkin', 'hora de entrada', 'ingreso', 'llegar temprano', 'horario del hotel', '2 pm'],
   },
   {
     ref: 57,
