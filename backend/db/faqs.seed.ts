@@ -306,8 +306,8 @@ export const FAQS: Faq[] = [
     category: 'parqueo',
     question: '¿El parqueo del hotel es seguro?',
     answer:
-      'Sí, el parqueo del hotel en Punta Cuchillos es seguro: cuenta con cámaras de vigilancia y guarda nocturno.',
-    keywords: ['parqueo', 'seguro', 'vigilancia', 'cámaras'],
+      'Sí, es un parqueo seguro: cuenta con cámaras de vigilancia y guarda nocturno. Está al aire libre, con sombra de los árboles. Te recomendamos no dejar objetos de valor a la vista, ya que el hotel no se responsabiliza por pérdidas.',
+    keywords: ['parqueo', 'seguro', 'vigilancia', 'cámaras', 'guarda', 'sombra'],
   },
   {
     ref: 34,
@@ -425,9 +425,9 @@ export const FAQS: Faq[] = [
     question: '¿Cuál es la dirección del parqueo del hotel?',
     answer:
       'Nuestro parqueo privado está en Punta Cuchillos, Paquera.\n' +
-      'Google Maps: https://maps.app.goo.gl/Snnib8ooGtsTnVXT6\n' +
-      'Waze: https://waze.com/ul/hd1exunn4z',
-    keywords: ['dirección', 'parqueo', 'ubicación', 'mapa', 'waze', 'punta cuchillos'],
+      '📍 [Ver en Google Maps](https://maps.app.goo.gl/CfUDsgym3HzmDbFCA)\n' +
+      '📍 [Ver en Waze](https://waze.com/ul/hd1exunn4z)',
+    keywords: ['dirección', 'parqueo', 'ubicación', 'mapa', 'waze', 'google maps', 'punta cuchillos'],
   },
   {
     ref: 49,
@@ -882,5 +882,21 @@ export const FAQS: Faq[] = [
     answer:
       'Ofrecemos cocina local con ingredientes naturales y de alta calidad, para todos los gustos. Podemos adaptar los menús a alergias o restricciones alimentarias si nos avisás con anticipación.',
     keywords: ['comida', 'alimentación', 'menú', 'cocina', 'tipo de comida', 'gastronomía'],
+  },
+  {
+    ref: 108,
+    category: 'parqueo',
+    question: '¿Necesito un 4x4 para llegar a Punta Cuchillos o puedo ir en carro normal?',
+    answer:
+      'No necesitás 4x4: podés llegar a nuestro parqueo de Punta Cuchillos en cualquier vehículo. Es privado, sin costo y con sombra de los árboles.',
+    keywords: ['4x4', 'tracción', 'vehículo', 'carro', 'punta cuchillos', 'sencillo', 'camino'],
+  },
+  {
+    ref: 109,
+    category: 'llegar',
+    question: '¿El hotel pasa a recogerme?',
+    answer:
+      'Sí. Ya sea que dejes el carro en nuestro parqueo de Punta Cuchillos (si cruzás el carro en el ferry) o en Puntarenas (y cruzás sin carro), en ambos casos enviamos una lancha a recogerte: en Punta Cuchillos o en el atracadero del ferry de Paquera.',
+    keywords: ['recoger', 'recogen', 'lancha', 'bote', 'punta cuchillos', 'atracadero', 'ferry'],
   },
 ]
