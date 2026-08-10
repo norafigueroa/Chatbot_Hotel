@@ -799,8 +799,8 @@ export const FAQS: Faq[] = [
     category: 'ocasiones',
     question: '¿Puedo coordinar un arreglo de flores?',
     answer:
-      '¡Claro! Nos ajustamos a tu presupuesto. Contanos qué tipo de arreglo querés y cuánto pensás invertir, y armamos el pedido a tu medida.',
-    keywords: ['flores', 'arreglo floral', 'ramo', 'sorpresa', 'decoración'],
+      '¡Claro, podemos coordinar arreglos de flores! 🌸 Para ver las opciones y los precios según lo que buscás, escribinos a reserve@islachiquita.com o al WhatsApp +506 8775 8600 y con gusto lo coordinamos con vos.',
+    keywords: ['flores', 'arreglo floral', 'ramo', 'sorpresa', 'decoración', 'precio flores'],
   },
   {
     ref: 98,
@@ -899,5 +899,13 @@ export const FAQS: Faq[] = [
     answer:
       'Sí. Ya sea que dejes el carro en nuestro parqueo de Punta Cuchillos (si cruzás el carro en el ferry) o en Puntarenas (y cruzás sin carro), en ambos casos enviamos una lancha a recogerte: en Punta Cuchillos o en el atracadero del ferry de Paquera.',
     keywords: ['recoger', 'recogen', 'lancha', 'bote', 'punta cuchillos', 'atracadero', 'ferry'],
+  },
+  {
+    ref: 110,
+    category: 'politicas',
+    question: '¿A qué hora es el check-out del hotel?',
+    answer:
+      'El check-out del hotel es a las 11:00 a. m. (El check-in es a las 2:00 p. m.)',
+    keywords: ['check-out', 'checkout', 'salida', 'hora de salida', 'dejar la habitación', '11'],
   },
 ]
