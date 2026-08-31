@@ -386,7 +386,7 @@ export const FAQS: Faq[] = [
     category: 'precios-pagos',
     question: '¿Tienen tarifas especiales para nacionales?',
     answer:
-      'Sí, contamos con tarifas especiales para nacionales. Puede verlas en: https://www.islachiquitacostarica.com/es/ofertas-especiales',
+      'Sí, contamos con tarifas especiales para nacionales. Puede verlas en: https://www.islachiquitacostarica.com/es/especiales-costarricenses-residentes',
     keywords: ['tarifas', 'nacionales', 'residentes', 'descuento', 'pura isla'],
   },
   {
