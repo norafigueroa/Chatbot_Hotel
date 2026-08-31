@@ -1,50 +1,69 @@
-# Isla Chiquita — Landing + Chatbot
+# Isla Chiquita — Chatbot
 
-Landing page del hotel de glamping **Isla Chiquita** (Golfo de Nicoya, Costa Rica)
-con un chatbot funcional impulsado por **OpenRouter** (acceso a modelos de IA, con
-modelos **gratuitos** y respaldo automático entre modelos).
+Backend + widget de chatbot para **Isla Chiquita Glamping Hotel** (Golfo de Nicoya,
+Costa Rica), impulsado por IA (Claude / Anthropic).
 
-Stack: **React 18 + TypeScript + Vite + Tailwind CSS**.
+Stack: **React 18 + TypeScript + Vite + Tailwind CSS** (frontend) y **funciones
+serverless de Vercel** (backend).
 
 ---
 
-## ✨ Características
+## ⚠️ Qué es cada parte de este repo
 
-- **Hero** con foto de fondo a pantalla completa (`public/hero.jpg`) y tarjeta flotante de reseñas.
-- **Header** con navegación, logo y CTA de reserva.
-- **Chatbot** en modal, con:
-  - Ícono ✨ animado en la esquina **inferior derecha**, **arriba** del botón de WhatsApp.
-  - Historial de conversación y respuestas **en tiempo real (streaming)**.
-  - **Respaldo automático de modelos** (si un modelo falla o está saturado, entra el siguiente).
-  - Preguntas sugeridas para arrancar.
-  - Respuestas en español, especializadas en transporte, precios, experiencias y bioluminiscencia.
-- Botones flotantes de **Privacy** (izquierda) y **WhatsApp** (derecha).
-- Diseño responsive (móvil y desktop) con la identidad visual (teal + Montserrat).
+Este repositorio tiene dos partes con roles muy distintos:
+
+1. **El entregable real**: el widget del chat (ícono + modal) y todo el backend
+   que lo hace funcionar (`api/`, `backend/`). Esto es lo que hay que integrar
+   al sitio real del hotel.
+2. **Una landing de referencia visual** (`Header`, `Hero`, `ReviewCard` en
+   `frontend/src/components/`): es un **mockup**, no el sitio real del hotel
+   (que es islachiquitacostarica.com, administrado por otro equipo). Se armó
+   únicamente para que quien lo vea se ubique y entienda cómo luce el widget
+   del chat ya funcionando sobre un sitio. Todos sus botones y links (menú,
+   "Book Now", Privacy, WhatsApp) son decorativos y no hacen nada — **el único
+   elemento funcional de toda la pantalla es el ícono del chat**, que abre el
+   modal real.
+
+Si estás integrando esto a la página del hotel, no hace falta que repliques
+Header/Hero/ReviewCard: lo que necesitás es el widget del chat y el backend.
 
 ---
 
 ## 📁 Estructura del proyecto
 
 ```
-public/
-├── hero.jpg                 # Foto de fondo del hero
-└── logo.png                 # Logo (favicon)
-src/
-├── components/
-│   ├── Header.tsx            # Encabezado, logo y navegación
-│   ├── Hero.tsx              # Sección hero (foto de fondo)
-│   ├── ReviewCard.tsx        # Tarjeta flotante de reseñas
-│   ├── ChatBot.tsx           # Modal del chatbot (UI + lógica)
-│   └── FloatingWidgets.tsx   # Privacy + lanzador ✨ + WhatsApp
-├── services/
-│   └── chatService.ts        # Integración con OpenRouter (streaming + fallback)
-├── types/
-│   └── index.ts              # Tipos compartidos (ChatMessage, etc.)
-├── utils/
-│   └── constants.ts          # Modelos, prompt base y datos de la landing
-├── App.tsx                   # Composición de la app
-├── main.tsx                  # Punto de entrada de React
-└── index.css                 # Tailwind + estilos personalizados
+frontend/                # Landing de referencia visual + widget del chat
+├── index.html
+├── public/               # Assets estáticos (logo, hero.jpg, íconos)
+└── src/
+    ├── components/
+    │   ├── Header.tsx, Hero.tsx, ReviewCard.tsx   # Landing de referencia (mockup)
+    │   ├── FloatingWidgets.tsx                    # Ícono del chat (único elemento funcional del fondo)
+    │   ├── ChatBot.tsx                            # Modal del chat: UI + lógica + leads
+    │   ├── ChatMarkdown.tsx                       # Renderiza las respuestas del bot (Markdown seguro)
+    │   └── LeadForm.tsx                           # Mini-formulario de contacto dentro del chat
+    ├── services/chatService.ts                    # Llama a /api/chat y /api/lead (streaming)
+    ├── types/index.ts                             # Tipos compartidos
+    ├── utils/constants.ts                         # Mensaje de bienvenida + preguntas sugeridas
+    ├── App.tsx, main.tsx, index.css
+
+api/                      # Entry points de Vercel (Edge Functions), delgados
+├── chat.ts                # POST /api/chat  → arma el prompt y llama al proveedor de IA (streaming)
+└── lead.ts                 # POST /api/lead  → guarda el lead en Supabase + notifica por correo
+
+backend/
+├── lib/
+│   ├── llm.ts              # Adaptador de proveedor de IA (OpenRouter ↔ Anthropic/Claude)
+│   ├── knowledge.ts         # Personalidad del bot + arma el prompt con las FAQs
+│   ├── supabase.ts          # Acceso a Supabase (FAQs + leads) vía REST, sin SDK
+│   ├── email.ts             # Notificación de leads por correo (Resend)
+│   └── weather.ts           # Clima en vivo (OpenWeather), inyectado al prompt cuando aplica
+├── db/
+│   ├── schema.sql           # Esquema de Supabase (tablas + RLS)
+│   └── faqs.seed.ts         # Base de conocimiento (FAQs) y respaldo local si Supabase no responde
+└── scripts/seed.mjs         # Carga/actualiza las FAQs de faqs.seed.ts en Supabase
+
+dev/api-middleware.ts     # SOLO desarrollo: sirve api/ dentro de `npm run dev` (Vite)
 ```
 
 ---
@@ -54,8 +73,10 @@ src/
 ### 1. Requisitos
 
 - Node.js 18+ y npm.
-- Una API key de **OpenRouter** (https://openrouter.ai/ → *Keys*). No requiere tarjeta;
-  incluye modelos gratuitos.
+- Cuenta y proyecto en **Supabase** (base de datos de FAQs y leads).
+- Una API key de IA: **Anthropic (Claude)** para el entregable final, u
+  **OpenRouter** si se quiere probar con modelos gratuitos.
+- Opcional: cuenta de **Resend** (correo de leads) y **OpenWeather** (clima en vivo).
 
 ### 2. Instalar dependencias
 
@@ -63,31 +84,51 @@ src/
 npm install
 ```
 
-### 3. Configurar la API key
-
-Copia el archivo de ejemplo y coloca tu key real:
+### 3. Configurar variables de entorno
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Edita `.env.local`:
+Completá `.env.local` con tus valores reales (ver comentarios dentro del
+archivo para el detalle de cada variable). Resumen:
 
-```
-VITE_OPENROUTER_API_KEY=sk-or-tu-key-real
-```
+| Variable | Para qué sirve |
+|---|---|
+| `LLM_PROVIDER` | `anthropic` (Claude, final) u `openrouter` (prototipo, gratis) |
+| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | Credenciales de Claude |
+| `OPENROUTER_API_KEY` | Credenciales de OpenRouter (si se usa ese proveedor) |
+| `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | Base de datos (FAQs + leads) |
+| `RESEND_API_KEY` / `LEAD_EMAIL_TO` | Notificación por correo de cada lead |
+| `OPENWEATHER_API_KEY` / `WEATHER_LAT` / `WEATHER_LON` | Clima en vivo de la isla |
 
 > `.env.local` está en `.gitignore` y **nunca** se sube a GitHub.
 
-### 4. Levantar el servidor de desarrollo
+### 4. Base de datos (Supabase)
+
+1. En el SQL Editor de Supabase, corré `backend/db/schema.sql` (crea las
+   tablas `faqs` y `leads`, con sus políticas de seguridad).
+2. Cargá las FAQs iniciales:
+
+```bash
+npm run seed
+```
+
+Este comando es idempotente: se puede correr las veces que haga falta para
+actualizar las FAQs (por ejemplo, después de editar `backend/db/faqs.seed.ts`).
+
+### 5. Levantar el servidor de desarrollo
 
 ```bash
 npm run dev
 ```
 
-Abre la URL que muestra Vite (por defecto http://localhost:5173).
+Un plugin de Vite (`dev/api-middleware.ts`) sirve `api/` dentro del mismo
+servidor, así que `npm run dev` levanta frontend **y** backend juntos —no
+hace falta `vercel dev`. Abrí la URL que muestra Vite (por defecto
+http://localhost:5173).
 
-### 5. Build de producción
+### 6. Build de producción
 
 ```bash
 npm run build      # genera /dist
@@ -96,69 +137,40 @@ npm run preview    # previsualiza el build localmente
 
 ---
 
-## 🤖 Sobre los modelos (OpenRouter)
+## ☁️ Despliegue
 
-- Se usa el endpoint compatible con OpenAI (`https://openrouter.ai/api/v1/chat/completions`).
-- La lista de modelos vive en `src/utils/constants.ts` (`MODELS`). Se envían como una
-  **cadena de respaldo** (máximo 3): si el primero falla o está saturado, OpenRouter
-  pasa automáticamente al siguiente.
-- Por defecto usa **modelos gratuitos** (`:free`) tipo *instruct* (chat directo), buenos
-  en español.
-- **Límite gratis:** ~20 peticiones/min y ~50/día por cuenta (compartidas entre modelos).
-  Comprar $10 una sola vez sube el límite diario a ~1000 para siempre.
-- ⚠️ En hora pico los modelos gratis pueden dar **429 (saturado)**; por eso está el
-  respaldo. Si quieres máxima disponibilidad, agrega un modelo de pago barato como
-  último respaldo en `MODELS`.
-
----
-
-## 🔐 Despliegue seguro en producción
-
-> ⚠️ **Importante.** Las variables `VITE_*` se incrustan en el bundle del navegador,
-> por lo que la API key **queda visible para cualquier visitante**. Aceptable para un
-> prototipo o demo interna, pero **no para producción pública**.
-
-Para producción, mueve la llamada a OpenRouter a una **función serverless** que mantenga
-la key en el servidor. En Vercel:
-
-1. Crea `api/chat.ts` (Vercel Serverless Function) que reciba el historial, llame a
-   OpenRouter usando `process.env.OPENROUTER_API_KEY` (sin prefijo `VITE_`) y devuelva
-   la respuesta (idealmente en streaming).
-2. En el frontend, cambia `src/services/chatService.ts` para hacer `fetch('/api/chat', …)`.
-3. En Vercel define la variable `OPENROUTER_API_KEY` (**sin** prefijo `VITE_`).
-
-Tip extra: en OpenRouter puedes ponerle un **límite de gasto por key** como red de seguridad.
-
----
-
-## ☁️ Despliegue en Vercel (prototipo)
-
-1. Sube el repositorio a GitHub.
-2. En Vercel: **New Project** → importa el repo.
-3. Framework preset: **Vite** (build `npm run build`, output `dist`).
-4. Agrega la variable de entorno `VITE_OPENROUTER_API_KEY` (prototipo) o
-   `OPENROUTER_API_KEY` (si migras a la función serverless).
-5. **Deploy**.
+Pensado para **Vercel**: `vercel.json` define `buildCommand: npm run build` y
+`outputDirectory: dist`. Las funciones de `api/` corren como Edge Functions.
+Configurá en Vercel las mismas variables de entorno de `.env.local.example`
+(sin prefijo `VITE_`, esas nunca llegan al navegador).
 
 ---
 
 ## ⚙️ Personalización
 
-- **Modelos / prompt / datos**: `src/utils/constants.ts`.
-  - `MODELS` — cadena de respaldo (máx. 3). Cámbialos por IDs de
-    https://openrouter.ai/models?max_price=0 (los `:free` son gratis).
-  - `SYSTEM_PROMPT` — personalidad y conocimiento del asistente.
-  - `WHATSAPP_URL` — reemplaza `50600000000` por el número real del hotel.
+- **Personalidad y reglas del bot**: `backend/lib/knowledge.ts` (`PERSONA`).
+- **Base de conocimiento (FAQs)**: `backend/db/faqs.seed.ts`. Después de
+  editarla, correr `npm run seed` para actualizar Supabase.
+- **Mensaje de bienvenida / preguntas sugeridas del chat**:
+  `frontend/src/utils/constants.ts`.
 - **Colores / fuente**: `tailwind.config.js` (`brand-teal`, Montserrat).
-- **Foto del hero**: reemplaza `public/hero.jpg`.
-- **Logo / favicon**: `public/logo.png` (favicon) y `src/components/Header.tsx` (logo del header).
+- **Landing de referencia**: `frontend/src/components/Header.tsx`,
+  `Hero.tsx`, `ReviewCard.tsx` — recordá que es solo un mockup visual (ver
+  arriba), no requiere mantenimiento fino.
 
 ---
 
 ## 🧠 Notas de implementación
 
-- El chatbot llama a OpenRouter con `fetch` y **streaming** (SSE), sin dependencias pesadas.
-- Usa el parámetro `models` (array) para el **respaldo automático** entre modelos.
-- La API es **stateless**: se envía el historial completo en cada mensaje.
-- Manejo de errores en español (key inválida, saldo, saturación 429, etc.).
-- Si falta la API key, la UI del chat muestra un aviso en lugar de fallar en silencio.
+- El chat responde en **streaming** (texto plano desde `/api/chat`), sin SSE
+  ni dependencias pesadas.
+- `backend/lib/llm.ts` reintenta automáticamente si el modelo devuelve una
+  respuesta vacía (hasta 3 intentos); los errores reales (401, 402, 429...)
+  nunca se reintentan.
+- La API es **stateless**: el frontend envía el historial completo en cada
+  mensaje.
+- Los leads se guardan primero en Supabase (fuente de verdad); el correo de
+  notificación es best-effort y no bloquea la respuesta al usuario.
+- Si Supabase no responde, el bot sigue funcionando con el respaldo local de
+  FAQs (`backend/db/faqs.seed.ts`), aunque los leads no se guardan mientras
+  tanto.

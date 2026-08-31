@@ -1,5 +1,4 @@
-const LOGO_URL =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBy37E4ObTpoRhkeWQWZh1LpaM8PbwkCYOOZp59J2ywsYNTsFz57vP-gVrwU5UDTSOPpy6mgpY5VlCS2rhN8HGeM8hAd5E45ljNceOZcVuSJp2tJmP9Zk8pkMLiAdlJFcND_fVhAVrE3GrWnTbIGhmRNpJrsr4L8pzYcX3iGMuLX3wD12upxpwrzqTXOdZ_EjZ2qMpjOMg8vf95u2m-yaIroUypUsusdpRGr-Jcc_BWwYNOaFxXWEuABP5dkSnAsNHvHg'
+const LOGO_URL = '/logo.png'
 
 const NAV_ITEMS = ['Our Tents', 'Specials', 'Experiences', 'Eat & Drink']
 

@@ -1,7 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_OPENROUTER_API_KEY: string
+  /** URL base del backend (opcional). Vacío = mismo origen. Ver frontend/src/services/chatService.ts. */
+  readonly VITE_API_BASE?: string
 }
 
 interface ImportMeta {
