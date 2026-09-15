@@ -17,9 +17,9 @@ Dos piezas, independientes entre sí:
    que dejan los visitantes. Esto **siempre** hay que desplegarlo, sin
    importar el stack del sitio.
 2. **El widget de chat** (ícono + ventana de chat): la parte visual con la
-   que interactúa el usuario. Está construido en React, pero **no es
-   obligatorio usar ese código tal cual** — más abajo se explican las dos
-   rutas posibles.
+   que interactúa el usuario. Se entrega como un **script embebible listo
+   para usar** (una sola línea `<script>`), pero también existen otras rutas
+   si se prefiere — ver sección 5.
 
 > ⚠️ El resto del repositorio (`frontend/src/components/Header.tsx`,
 > `Hero.tsx`, `ReviewCard.tsx`) es una landing de **referencia visual**
@@ -64,8 +64,12 @@ Widget  →  POST /api/lead  { name, phone?, country?, email?, conversation? }
 
 ## 3. Desplegar el backend
 
-El backend está pensado para **Vercel** (Edge Functions), que es como se
-desarrolló y probó. Requiere:
+**Ya está desplegado y funcionando** en `https://chatbot-hotel-tan.vercel.app`
+— si se usa la Ruta A (sección 5), no hay que desplegar nada más para
+integrar el widget.
+
+Si en cambio se prefiere alojar una copia propia del backend, está pensado
+para **Vercel** (Edge Functions), que es como se desarrolló y probó. Requiere:
 
 - Node/runtime compatible con Edge (soporte de `fetch`, `Response`,
   `ReadableStream` — estándares Web, no APIs específicas de Node).
@@ -104,9 +108,33 @@ comentarios.
 
 ---
 
-## 5. Integrar el widget — dos rutas
+## 5. Integrar el widget — tres rutas
 
-### Ruta A — El sitio ya usa React
+### Ruta A — Script embebible (recomendada)
+
+Es una sola línea, sin instalar nada ni tocar el resto del sitio:
+
+```html
+<script src="https://chatbot-hotel-tan.vercel.app/widget.js" defer></script>
+```
+
+Se puede pegar directo en el HTML del sitio, o cargar a través de un gestor
+de tags (Google Tag Manager y similares) — ambas formas funcionan igual.
+
+Qué hace este script al cargar:
+- Dibuja el ícono flotante del chat (esquina inferior derecha) sobre la
+  página, sin necesitar ningún `<div>` ni marcado previo del sitio.
+- Aísla sus estilos con Shadow DOM: no le va a cambiar el diseño al sitio,
+  y el CSS del sitio tampoco le va a cambiar el diseño al widget.
+- Habla con el backend (ver sección 2) que ya está desplegado y funcionando
+  en la URL de arriba — no hay nada más que desplegar ni configurar para
+  usar esta ruta.
+
+Es la misma pieza de código (React) usada en la demo, solo que empaquetada
+para funcionar de forma independiente en cualquier sitio, sin importar en
+qué tecnología esté hecho.
+
+### Ruta B — El sitio ya usa React
 
 Se pueden tomar directo estos componentes de `frontend/src/components/`:
 
@@ -123,7 +151,7 @@ los colores de marca `brand-teal`).
 configurar `VITE_API_BASE` (o el equivalente en su bundler) con la URL del
 backend.
 
-### Ruta B — El sitio NO usa React (o se prefiere reimplementar la UI)
+### Ruta C — El sitio NO usa React (o se prefiere reimplementar la UI)
 
 En este caso, el backend (`/api/chat` y `/api/lead`) se puede consumir desde
 cualquier tecnología, ya que son endpoints HTTP simples. El "contrato" es:
