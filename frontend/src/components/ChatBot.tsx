@@ -6,6 +6,7 @@ import {
   WELCOME_MESSAGE,
   type SuggestionIcon,
 } from '../utils/constants'
+import { ASSET_BASE } from '../utils/assetBase'
 import ChatMarkdown from './ChatMarkdown'
 import LeadForm from './LeadForm'
 
@@ -75,7 +76,7 @@ function ChipIcon({ name }: { name: SuggestionIcon }) {
 function BotAvatar() {
   return (
     <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-teal/10">
-      <img src="/Logo_Modal.png" alt="" aria-hidden="true" className="h-6 w-6 object-contain" />
+      <img src={`${ASSET_BASE}/Logo_Modal.png`} alt="" aria-hidden="true" className="h-6 w-6 object-contain" />
     </div>
   )
 }
@@ -210,7 +211,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       <div className="flex items-center justify-between border-b border-black/5 bg-gradient-to-b from-brand-teal/20 to-white px-4 py-3">
         <div className="flex items-center gap-2">
           <img
-            src="/Logo_Modal.png"
+            src={`${ASSET_BASE}/Logo_Modal.png`}
             alt=""
             aria-hidden="true"
             className="h-11 w-11 shrink-0 object-contain"

@@ -14,17 +14,21 @@
 
 import { insertLead, type LeadInput } from '../backend/lib/supabase'
 import { sendLeadEmail } from '../backend/lib/email'
+import { corsHeaders, handlePreflight } from '../backend/lib/cors'
 
 export const config = { runtime: 'edge' }
 
 export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== 'POST') return json({ error: 'Método no permitido.' }, 405)
+  const preflight = handlePreflight(req)
+  if (preflight) return preflight
+
+  if (req.method !== 'POST') return json(req, { error: 'Método no permitido.' }, 405)
 
   let body: any
   try {
     body = await req.json()
   } catch {
-    return json({ error: 'Cuerpo inválido.' }, 400)
+    return json(req, { error: 'Cuerpo inválido.' }, 400)
   }
 
   const lead: LeadInput = {
@@ -37,17 +41,17 @@ export default async function handler(req: Request): Promise<Response> {
 
   // Al menos un dato de contacto real (correo o teléfono).
   if (!lead.email && !lead.phone) {
-    return json({ error: 'Se requiere al menos un correo o teléfono.' }, 400)
+    return json(req, { error: 'Se requiere al menos un correo o teléfono.' }, 400)
   }
   if (lead.email && !isEmail(lead.email)) {
-    return json({ error: 'El correo no tiene un formato válido.' }, 400)
+    return json(req, { error: 'El correo no tiene un formato válido.' }, 400)
   }
 
   try {
     await insertLead(lead)
   } catch (err) {
     console.error('[lead] error al guardar en base:', err)
-    return json({ error: 'No pudimos guardar tus datos. Intentá de nuevo o escribinos a reserve@islachiquita.com.' }, 500)
+    return json(req, { error: 'No pudimos guardar tus datos. Intentá de nuevo o escribinos a reserve@islachiquita.com.' }, 500)
   }
 
   // El correo es best-effort: no bloquea la respuesta al usuario.
@@ -57,7 +61,7 @@ export default async function handler(req: Request): Promise<Response> {
     console.error('[lead] error al enviar correo (el lead sí se guardó):', err)
   }
 
-  return json({ ok: true })
+  return json(req, { ok: true })
 }
 
 function str(v: unknown): string | undefined {
@@ -70,9 +74,9 @@ function isEmail(v: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
 }
 
-function json(data: unknown, status = 200): Response {
+function json(req: Request, data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', ...corsHeaders(req) },
   })
 }

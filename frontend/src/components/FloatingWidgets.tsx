@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ASSET_BASE } from '../utils/assetBase'
 
 interface FloatingWidgetsProps {
   chatOpen: boolean
@@ -83,7 +84,7 @@ export default function FloatingWidgets({
             </svg>
           ) : (
             <img
-              src="/Burbuja_Chat.png"
+              src={`${ASSET_BASE}/Burbuja_Chat.png`}
               alt=""
               aria-hidden="true"
               className="h-16 w-16 animate-pulse-glow object-contain drop-shadow-lg"

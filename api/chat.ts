@@ -14,6 +14,7 @@
 import { streamChat, LlmError, type ChatTurn } from '../backend/lib/llm'
 import { buildSystemPrompt } from '../backend/lib/knowledge'
 import { isWeatherQuery, getWeatherContext } from '../backend/lib/weather'
+import { corsHeaders, handlePreflight } from '../backend/lib/cors'
 
 export const config = { runtime: 'edge' }
 
@@ -21,20 +22,23 @@ const MAX_MESSAGES = 30
 const MAX_CHARS = 4000
 
 export default async function handler(req: Request): Promise<Response> {
+  const preflight = handlePreflight(req)
+  if (preflight) return preflight
+
   if (req.method !== 'POST') {
-    return json({ error: 'Método no permitido.' }, 405)
+    return json(req, { error: 'Método no permitido.' }, 405)
   }
 
   let body: any
   try {
     body = await req.json()
   } catch {
-    return json({ error: 'Cuerpo inválido.' }, 400)
+    return json(req, { error: 'Cuerpo inválido.' }, 400)
   }
 
   const messages = sanitizeMessages(body?.messages)
   if (!messages) {
-    return json({ error: 'Se requiere un arreglo "messages" válido.' }, 400)
+    return json(req, { error: 'Se requiere un arreglo "messages" válido.' }, 400)
   }
 
   try {
@@ -56,12 +60,13 @@ export default async function handler(req: Request): Promise<Response> {
         'Content-Type': 'text/plain; charset=utf-8',
         'Cache-Control': 'no-cache',
         'X-Accel-Buffering': 'no',
+        ...corsHeaders(req),
       },
     })
   } catch (err) {
-    if (err instanceof LlmError) return json({ error: err.message }, err.status)
+    if (err instanceof LlmError) return json(req, { error: err.message }, err.status)
     console.error('[chat] error:', err)
-    return json({ error: 'Ocurrió un error inesperado. Intentá de nuevo.' }, 500)
+    return json(req, { error: 'Ocurrió un error inesperado. Intentá de nuevo.' }, 500)
   }
 }
 
@@ -84,9 +89,9 @@ function sanitizeMessages(raw: unknown): ChatTurn[] | null {
   return out.length ? out : null
 }
 
-function json(data: unknown, status = 200): Response {
+function json(req: Request, data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', ...corsHeaders(req) },
   })
 }
