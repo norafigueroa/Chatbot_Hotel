@@ -21,7 +21,11 @@ function WidgetApp() {
   const [chatOpen, setChatOpen] = useState(false)
   return (
     <>
-      <FloatingWidgets chatOpen={chatOpen} onToggleChat={() => setChatOpen((open) => !open)} />
+      <FloatingWidgets
+        embedded
+        chatOpen={chatOpen}
+        onToggleChat={() => setChatOpen((open) => !open)}
+      />
       <ChatBot isOpen={chatOpen} onClose={() => setChatOpen(false)} />
     </>
   )
